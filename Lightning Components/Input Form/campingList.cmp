@@ -1,0 +1,30 @@
+<aura:component controller="CampingListController">
+    <aura:attribute name="items" type="Camping_Item__c[]" /> <!-- to store Camping item data -->
+    <aura:attribute name="CampingCreate" type="Camping_Item__c"  
+                    default="{ 'sobjectType': 'Camping_Item__c',
+                    'Name': '',
+                    'Quantity__c': 0,
+                    'Price__c': 0,
+                    'Packed__c': false }"/> <!-- Store data for new reord -->
+    <aura:attribute name="CampingColumn" type="List" /> 
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <lightning:input aura:id="campingdetail"
+                     label="Camping List Name"
+                     value="{!v.CampingCreate.Name}" />
+    <lightning:input aura:id="campingdetail"
+                     label="Camping List Packed"
+                     value="{!v.CampingCreate.Packed__c}" />
+    <lightning:input aura:id="campingdetail"
+                     label="Camping List Price"
+                     value="{!v.CampingCreate.Price__c}" />
+    <lightning:input aura:id="campingdetail"
+                     label="Camping List Quantity"
+                     value="{!v.CampingCreate.Quantity__c}" />
+    <lightning:button label="Save" onclick="{!c.callcontroller}" />
+    <lightning:datatable keyField="Id"
+                         data="{!v.items}"
+                         columns="{!v.CampingColumn}" />
+    <!-- <aura:handler name="init" value="{!this}" action="{!c.doInit}" /> -->
+</aura:component>
