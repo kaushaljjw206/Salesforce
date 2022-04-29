@@ -1,0 +1,56 @@
+
+<!-- original file name SSP_AccountExecutiveSponsorUpdate.cmp -->
+<aura:component controller="SSP_AccountUpdateController" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,force:lightningQuickActionWithoutHeader" >
+	
+    <aura:attribute name="contactRecordId" type="Id" />
+    <aura:attribute name="editComponent" type="boolean" default="true"/>
+    <aura:attribute name="confirmComponent" type="boolean" default="false"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <aura:html tag="style">
+        .slds-p-around--medium {
+            padding: 0rem !important;
+        }   
+        .slds-modal__content{
+            overflow-y:hidden !important;
+            height:unset !important;
+            max-height:unset !important;
+        }
+        .cuf-content {
+            padding: 0 0rem !important;
+        }
+    </aura:html>
+    
+    <!-- Header of the Component -->
+    <div class="modal-header slds-modal__header slds-size_1-of-1">
+        <h4 class="title slds-text-heading--small">Change Executive Sponsor</h4>
+    </div>
+    
+    <!-- Executive Sponsor field component -->
+    <aura:if isTrue="{!v.editComponent}">
+        <lightning:recordEditForm objectApiName="Account" recordId="{!v.recordId}">
+            <div class="slds-modal__content slds-p-around--large slds-size_1-of-1 slds-is-relative">
+                <lightning:messages />
+                <lightning:inputField aura:id="fieldValue" fieldName="SSP_Executive_Sponsor__c" required="true"/>
+            </div>
+            <!-- Footer -->
+            <div class="modal-footer slds-modal__footer slds-size_1-of-1">
+                <lightning:button class="slds-button " onclick="{!c.cancelAction}">Cancel </lightning:button>
+                <lightning:button class="slds-button slds-button--brand" onclick="{!c.saveChanges}">Save </lightning:button>
+            </div>
+        </lightning:recordEditForm>
+    </aura:if>
+    
+    <!-- Confirm Message Component -->
+    <aura:if isTrue="{!v.confirmComponent}" >
+        <div class="slds-modal__content slds-p-around--x-small slds-align_absolute-center slds-size_1-of-1 slds-is-relative">
+            <div class="slds-m-around_large">Please confirm if appropriate approvals for Executive Sponsor is already acquired</div>
+        </div>
+        <!-- Footer -->
+        <div class="modal-footer slds-modal__footer slds-size_1-of-1">
+            <lightning:button class="slds-button " onclick="{!c.cancelAction}">Cancel </lightning:button>
+            <lightning:button class="slds-button slds-button--brand" onclick="{!c.saveRecord}">Confirm </lightning:button>
+        </div>
+    </aura:if>
+    
+</aura:component>
