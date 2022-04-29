@@ -1,0 +1,23 @@
+/*******************************************************************************************************
+* @Description : SSP_AccountUpdateController is used in Aura Component - SSP_AccountExecutiveSponsorUpdate
+* @CreatedBy :   Kaushal Jhunjhunwala(SSP Dev Team)
+* @Date :        29th April, 2022
+*******************************************************************************************************/
+
+global with sharing class SSP_AccountUpdateController {
+	
+    @AuraEnabled
+    global static Account updateAccountDetails(Id accountId, Id contactId){
+        Account a = [SELECT id, name, SSP_Executive_Sponsor__c, SSP_Confirm_Approval__c, SSP_Change_Details__c from Account WHERE id = :accountId LIMIT 1];
+        a.SSP_Executive_Sponsor__c = contactId; //update Contact on Executive Sponsor
+        a.SSP_Confirm_Approval__c = true; //mark Confirm Approval to true
+        String userName = UserInfo.getName(); //get login user name
+        DateTime dt = System.now(); //get current date and time
+        String dateTimeNow = String.valueOf(dt);
+        a.SSP_Change_Details__c = userName + ', ' + dateTimeNow; //update name along with data and time
+        
+        update a;
+        return a;  
+        
+    }
+}
