@@ -1,0 +1,41 @@
+/*******************************************************************************************************
+ * @Description : SSP_TestClassFactory is the test class created for SSP_AccountUpdateController class 
+ * @CreatedBy :   Kaushal Jhunjhunwala(SSP Dev Team)
+ * @Date :        29th April, 2022
+ *******************************************************************************************************/
+@isTest
+public class SSP_AccountUpdateControllerTest {
+	
+    @testSetup static void setup(){
+        //create test user
+        User testUser = SSP_TestClassFactory.insertSSPUser();
+        
+        //create a permission set
+        PermissionSet psObject = new PermissionSet(Name='CRM_Super_User', Label='CRM_Super_User');
+        insert psObject;
+        
+        //assigning Permission Set to the test users
+        insert new PermissionSetAssignment(PermissionSetId = psObject.Id, AssigneeId = testUser.Id);
+    }
+    
+      static testMethod void updateAccountTest(){
+        //create test SSP_Department__c  
+        SSP_Department__c dep = new SSP_Department__c(name='Test Department');
+        insert dep;
+        
+        //create test Account
+        Account acc = SSP_TestClassFactory.createsspAccount();
+        insert acc;
+        
+        //create test Contact 1
+        Contact c = SSP_TestClassFactory.createSSPContact('Contact 1', 'Test', acc.Id, dep.Id);
+        insert c; 
+
+        User u = [Select id from User where username='testUserSSPtest@test.com' LIMIT 1];
+        Account acc1 = new Account();
+        System.runAs(u){
+            acc1 = SSP_AccountUpdateController.updateAccountDetails(acc.id,c.id);
+            System.debug(acc1);
+        }
+    }
+}
