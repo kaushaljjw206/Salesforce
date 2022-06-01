@@ -5,35 +5,42 @@
  *******************************************************************************************************/
 @isTest
 public class SSP_AccountUpdateControllerTest {
-	
+    
     @testSetup static void setup(){
         //create test user
-        User testUser = SSP_TestClassFactory.insertSSPUser();
+        Profile testProfile = [SELECT Id FROM Profile WHERE NAME = 'Shell PT Salesforce Profile'];
+        UserRole sspRole = [SELECT Id, Name FROM UserRole WHERE Name = 'Shell Supplier Sphere'];
         
-        //create a permission set
-        PermissionSet psObject = new PermissionSet(Name='CRM_Super_User', Label='CRM_Super_User');
-        insert psObject;
+        User testUser = SSP_TestClassFactory.createSSPUser(testProfile.Id, sspRole.Id, 'sspO', 'testUserSSPtest@test.com');       
+        insert testUser;
+        //get permission set
+        PermissionSet psRecord = [SELECT id, name, label from PermissionSet where name='Shell_Supplier_Sphere_Access']; 
         
         //assigning Permission Set to the test users
-        insert new PermissionSetAssignment(PermissionSetId = psObject.Id, AssigneeId = testUser.Id);
+        insert new PermissionSetAssignment(PermissionSetId = psRecord.Id, AssigneeId = testUser.Id);
     }
     
-      static testMethod void updateAccountTest(){
-        //create test SSP_Department__c  
-        SSP_Department__c dep = new SSP_Department__c(name='Test Department');
-        insert dep;
+    static testMethod void updateAccountTest(){
         
-        //create test Account
-        Account acc = SSP_TestClassFactory.createsspAccount();
-        insert acc;
         
-        //create test Contact 1
-        Contact c = SSP_TestClassFactory.createSSPContact('Contact 1', 'Test', acc.Id, dep.Id);
-        insert c; 
-
-        User u = [Select id from User where username='testUserSSPtest@test.com' LIMIT 1];
+        User u = [Select id from User LIMIT 1];
         Account acc1 = new Account();
         System.runAs(u){
+            //create test SSP_Department__c  
+            SSP_Department__c dep = new SSP_Department__c(name='Test Department');
+            insert dep;
+            
+            //create test Account
+            Account acc = SSP_TestClassFactory.createsspAccount();
+            insert acc;
+            
+            //create test Contact 1
+            Contact c = new Contact();
+            c.LastName = 'Contact 1';
+            c.FirstName = 'Test';
+            c.AccountId = acc.Id;
+            c.SSP_Department__c = dep.Id;  
+            insert c; 
             acc1 = SSP_AccountUpdateController.updateAccountDetails(acc.id,c.id);
             System.debug(acc1);
         }
