@@ -1,17 +1,13 @@
-/*******************************************************************************************************
- * @Description : SSP_TestClassFactory is the test class created for SSP_AccountUpdateController class 
- * @CreatedBy :   Kaushal Jhunjhunwala(SSP Dev Team)
- * @Date :        29th April, 2022
- *******************************************************************************************************/
+
 @isTest
-public class SSP_AccountUpdateControllerTest {
+public class AccountRecordUpdateControllerTest {
     
     @testSetup static void setup(){
         //create test user
         Profile testProfile = [SELECT Id FROM Profile WHERE NAME = 'Shell PT Salesforce Profile'];
-        UserRole sspRole = [SELECT Id, Name FROM UserRole WHERE Name = 'Shell Supplier Sphere'];
+        UserRole userRole = [SELECT Id, Name FROM UserRole WHERE Name = 'Shell Supplier Sphere'];
         
-        User testUser = SSP_TestClassFactory.createSSPUser(testProfile.Id, sspRole.Id, 'sspO', 'testUserSSPtest@test.com');       
+        User testUser = TestClassFactory.createSSPUser(testProfile.Id, userRole.Id, 'sspO', 'testUserProjecttest@test.com');       
         insert testUser;
         //get permission set
         PermissionSet psRecord = [SELECT id, name, label from PermissionSet where name='Shell_Supplier_Sphere_Access']; 
@@ -26,12 +22,12 @@ public class SSP_AccountUpdateControllerTest {
         User u = [Select id from User LIMIT 1];
         Account acc1 = new Account();
         System.runAs(u){
-            //create test SSP_Department__c  
-            SSP_Department__c dep = new SSP_Department__c(name='Test Department');
+            //create test Department__c  
+            Department__c dep = new Department__c(name='Test Department');
             insert dep;
             
             //create test Account
-            Account acc = SSP_TestClassFactory.createsspAccount();
+            Account acc = TestClassFactory.createsspAccount();
             insert acc;
             
             //create test Contact 1
@@ -39,7 +35,7 @@ public class SSP_AccountUpdateControllerTest {
             c.LastName = 'Contact 1';
             c.FirstName = 'Test';
             c.AccountId = acc.Id;
-            c.SSP_Department__c = dep.Id;  
+            c.Department__c = dep.Id;  
             insert c; 
             acc1 = SSP_AccountUpdateController.updateAccountDetails(acc.id,c.id);
             System.debug(acc1);
